@@ -410,52 +410,224 @@
 
 <span class="text-[#c586c0]">import</span> numpy <span class="text-[#c586c0]">as</span> np
 <span class="text-[#c586c0]">import</span> urllib.request
+<span class="text-[#c586c0]">import</span> plotly.graph_objects <span class="text-[#c586c0]">as</span> go
+<span class="text-[#c586c0]">from</span> plotly.subplots <span class="text-[#c586c0]">import</span> make_subplots
 <span class="text-[#c586c0]">from</span> sklearn.neighbors <span class="text-[#c586c0]">import</span> KernelDensity
 
-MODE = <span class="text-[#ce9178]">"grand"</span> <span class="text-[#6a9955]"># Options: "microcanonical", "canonical", "grand"</span>
-N = <span class="text-[#b5cea8]">400</span>; G = <span class="text-[#b5cea8]">0.0005</span>; H0 = <span class="text-[#b5cea8]">0.012</span>; dt = <span class="text-[#b5cea8]">0.05</span>
+<span class="text-[#dcdcaa]">print</span>(<span class="text-[#ce9178]">"Summoning the Universe..."</span>)
 
-<span class="text-[#6a9955]"># (A) LOAD NASA FIRAS DATA</span>
-url = <span class="text-[#ce9178]">"https://lambda.gsfc.nasa.gov/data/cobe/firas.txt"</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># SETTINGS</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+MODE = <span class="text-[#ce9178]">"canonical"</span>
+<span class="text-[#6a9955]"># OPTIONS: "microcanonical", "canonical", "grand"</span>
+
+N = <span class="text-[#b5cea8]">400</span>
+G = <span class="text-[#b5cea8]">0.0005</span>
+H0 = <span class="text-[#b5cea8]">0.012</span>
+dt = <span class="text-[#b5cea8]">0.05</span>
+steps = <span class="text-[#b5cea8]">100</span>
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># LOAD NASA FIRAS DATA</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+url = <span class="text-[#ce9178]">"https://lambda.gsfc.nasa.gov/data/cobe/firas/monopole_spec/firas_monopole_spec_v1.txt"</span>
 urllib.request.urlretrieve(url, <span class="text-[#ce9178]">"firas.txt"</span>)
-data = np.loadtxt(<span class="text-[#ce9178]">"firas.txt"</span>, comments=<span class="text-[#ce9178]">"#"</span>)
-freq, intensity = data[:, <span class="text-[#b5cea8]">0</span>], data[:, <span class="text-[#b5cea8]">1</span>]
 
-<span class="text-[#6a9955]"># (B) ML MODEL (KDE) - Reconstruct Probability Density</span>
+data = np.loadtxt(<span class="text-[#ce9178]">"firas.txt"</span>, comments=<span class="text-[#ce9178]">"#"</span>)
+freq = data[:, <span class="text-[#b5cea8]">0</span>]
+intensity = data[:, <span class="text-[#b5cea8]">1</span>]
+intensity = intensity / np.max(intensity)
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># ML MODEL (KDE)</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
 kde = KernelDensity(bandwidth=<span class="text-[#b5cea8]">0.05</span>)
 kde.fit(freq.reshape(-<span class="text-[#b5cea8]">1</span>,<span class="text-[#b5cea8]">1</span>), sample_weight=intensity)
 
-<span class="text-[#6a9955]"># (C) ENERGY INITIALIZATION (3 ENSEMBLES)</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># ENERGY INITIALIZATION (3 ENSEMBLES)</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
 <span class="text-[#c586c0]">if</span> MODE == <span class="text-[#ce9178]">"microcanonical"</span>:
-    <span class="text-[#6a9955]"># Closed universe, no fluctuation</span>
     energies = np.ones(N) * <span class="text-[#b5cea8]">0.5</span>
-<span class="text-[#c586c0]">elif</span> MODE == <span class="text-[#ce9178]">"canonical"</span>:
-    <span class="text-[#6a9955]"># Thermal equilibrium</span>
-    energies = kde.sample(N).flatten()
-<span class="text-[#c586c0]">elif</span> MODE == <span class="text-[#ce9178]">"grand"</span>:
-    <span class="text-[#6a9955]"># Energy + Particle number fluctuate</span>
-    energies = kde.sample(N).flatten()
 
-<span class="text-[#6a9955]"># FAST GRAVITY VECTORIZATION</span>
+<span class="text-[#c586c0]">elif</span> MODE == <span class="text-[#ce9178]">"canonical"</span>:
+    samples = kde.sample(N)
+    energies = samples.flatten()
+    energies = (energies - energies.min()) / (energies.max() - energies.min())
+
+<span class="text-[#c586c0]">elif</span> MODE == <span class="text-[#ce9178]">"grand"</span>:
+    samples = kde.sample(N)
+    energies = samples.flatten()
+    energies = (energies - energies.min()) / (energies.max() - energies.min())
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># INITIAL BIG BANG</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+pos = np.random.normal(<span class="text-[#b5cea8]">0</span>, <span class="text-[#b5cea8]">0.05</span>, (N,<span class="text-[#b5cea8]">3</span>))
+vel = np.random.normal(<span class="text-[#b5cea8]">0</span>, <span class="text-[#b5cea8]">1.0</span>, (N,<span class="text-[#b5cea8]">3</span>))
+vel += pos * <span class="text-[#b5cea8]">3</span>
+
+mass = energies + <span class="text-[#b5cea8]">0.1</span>
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># FAST GRAVITY</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
 <span class="text-[#c586c0]">def</span> <span class="text-[#dcdcaa]">gravity_fast</span>(pos, mass):
     dx = pos[:, np.newaxis, :] - pos[np.newaxis, :, :]
     dist = np.linalg.norm(dx, axis=<span class="text-[#b5cea8]">2</span>) + <span class="text-[#b5cea8]">1e-5</span>
     force = G * dx / dist[:,:,<span class="text-[#569cd6]">None</span>]**<span class="text-[#b5cea8]">3</span>
-    <span class="text-[#c586c0]">return</span> np.sum(force * mass[np.newaxis,:,<span class="text-[#569cd6]">None</span>], axis=<span class="text-[#b5cea8]">1</span>)
+    acc = np.sum(force * mass[np.newaxis,:,<span class="text-[#569cd6]">None</span>], axis=<span class="text-[#b5cea8]">1</span>)
+    <span class="text-[#c586c0]">return</span> acc
 
-<span class="text-[#6a9955]"># (D) SIMULATION LOOP</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># BACKGROUND STARS</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+stars = <span class="text-[#b5cea8]">800</span>
+sx = np.random.uniform(-<span class="text-[#b5cea8]">20</span>,<span class="text-[#b5cea8]">20</span>,stars)
+sy = np.random.uniform(-<span class="text-[#b5cea8]">20</span>,<span class="text-[#b5cea8]">20</span>,stars)
+sz = np.random.uniform(-<span class="text-[#b5cea8]">20</span>,<span class="text-[#b5cea8]">20</span>,stars)
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># CREATE FIGURE WITH GRAPH PANEL</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+fig = make_subplots(
+    rows=<span class="text-[#b5cea8]">1</span>, cols=<span class="text-[#b5cea8]">2</span>,
+    specs=[[{<span class="text-[#ce9178]">'type'</span>: <span class="text-[#ce9178]">'scene'</span>}, {<span class="text-[#ce9178]">'type'</span>: <span class="text-[#ce9178]">'xy'</span>}]],
+    column_widths=[<span class="text-[#b5cea8]">0.7</span>, <span class="text-[#b5cea8]">0.3</span>],
+    subplot_titles=(<span class="text-[#ce9178]">"Universe"</span>, <span class="text-[#ce9178]">"Energy Distribution"</span>)
+)
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># SIMULATION LOOP</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+frames = []
+
 <span class="text-[#c586c0]">for</span> t <span class="text-[#c586c0]">in</span> <span class="text-[#dcdcaa]">range</span>(steps):
-    vel += H0 * pos <span class="text-[#6a9955]"># Hubble expansion</span>
+
+    <span class="text-[#6a9955]"># Hubble expansion</span>
+    vel += H0 * pos
+
+    <span class="text-[#6a9955]"># Gravity</span>
     vel += gravity_fast(pos, mass) * dt
+
+    <span class="text-[#6a9955]"># Update positions</span>
     pos += vel * dt
-    
+
+    <span class="text-[#6a9955]"># GRAND CANONICAL EFFECTS</span>
     <span class="text-[#c586c0]">if</span> MODE == <span class="text-[#ce9178]">"grand"</span>:
-        <span class="text-[#6a9955]"># Particle Creation & Annihilation</span>
+
         <span class="text-[#c586c0]">if</span> np.random.rand() < <span class="text-[#b5cea8]">0.05</span>:
+            new_pos = np.random.normal(<span class="text-[#b5cea8]">0</span>, <span class="text-[#b5cea8]">0.1</span>, (<span class="text-[#b5cea8]">5</span>,<span class="text-[#b5cea8]">3</span>))
+            new_vel = np.random.normal(<span class="text-[#b5cea8]">0</span>, <span class="text-[#b5cea8]">1</span>, (<span class="text-[#b5cea8]">5</span>,<span class="text-[#b5cea8]">3</span>))
+            new_energy = kde.sample(<span class="text-[#b5cea8]">5</span>).flatten()
+
             pos = np.vstack([pos, new_pos])
-            energies = np.concatenate([energies, kde.sample(<span class="text-[#b5cea8]">5</span>).flatten()])
+            vel = np.vstack([vel, new_vel])
+            energies = np.concatenate([energies, new_energy])
+            mass = energies + <span class="text-[#b5cea8]">0.1</span>
+
         <span class="text-[#c586c0]">if</span> <span class="text-[#dcdcaa]">len</span>(pos) > <span class="text-[#b5cea8]">200</span> <span class="text-[#c586c0]">and</span> np.random.rand() < <span class="text-[#b5cea8]">0.03</span>:
-            pos = pos[:-<span class="text-[#b5cea8]">5</span>]; energies = energies[:-<span class="text-[#b5cea8]">5</span>]
+            pos = pos[:-<span class="text-[#b5cea8]">5</span>]
+            vel = vel[:-<span class="text-[#b5cea8]">5</span>]
+            energies = energies[:-<span class="text-[#b5cea8]">5</span>]
+            mass = energies + <span class="text-[#b5cea8]">0.1</span>
+
+    <span class="text-[#6a9955]"># Histogram (explanation)</span>
+    hist, bins = np.histogram(energies, bins=<span class="text-[#b5cea8]">30</span>)
+
+    frames.append(go.Frame(
+        data=[
+            <span class="text-[#6a9955]"># stars</span>
+            go.Scatter3d(
+                x=sx, y=sy, z=sz,
+                mode=<span class="text-[#ce9178]">'markers'</span>,
+                marker=<span class="text-[#dcdcaa]">dict</span>(size=<span class="text-[#b5cea8]">1</span>, color=<span class="text-[#ce9178]">'white'</span>, opacity=<span class="text-[#b5cea8]">0.1</span>)
+            ),
+            <span class="text-[#6a9955]"># particles</span>
+            go.Scatter3d(
+                x=pos[:,<span class="text-[#b5cea8]">0</span>], y=pos[:,<span class="text-[#b5cea8]">1</span>], z=pos[:,<span class="text-[#b5cea8]">2</span>],
+                mode=<span class="text-[#ce9178]">'markers'</span>,
+                marker=<span class="text-[#dcdcaa]">dict</span>(
+                    size=<span class="text-[#b5cea8]">4</span>,
+                    color=energies,
+                    colorscale=<span class="text-[#ce9178]">'Turbo'</span>,
+                    opacity=<span class="text-[#b5cea8]">0.95</span>
+                )
+            ),
+            <span class="text-[#6a9955]"># histogram</span>
+            go.Bar(
+                x=bins[:-<span class="text-[#b5cea8]">1</span>],
+                y=hist,
+            )
+        ]
+    ))
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># INITIAL FRAME</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+fig.add_trace(go.Scatter3d(
+    x=sx, y=sy, z=sz,
+    mode=<span class="text-[#ce9178]">'markers'</span>,
+    marker=<span class="text-[#dcdcaa]">dict</span>(size=<span class="text-[#b5cea8]">1</span>, color=<span class="text-[#ce9178]">'white'</span>, opacity=<span class="text-[#b5cea8]">0.1</span>)
+), row=<span class="text-[#b5cea8]">1</span>, col=<span class="text-[#b5cea8]">1</span>)
+
+fig.add_trace(go.Scatter3d(
+    x=pos[:,<span class="text-[#b5cea8]">0</span>], y=pos[:,<span class="text-[#b5cea8]">1</span>], z=pos[:,<span class="text-[#b5cea8]">2</span>],
+    mode=<span class="text-[#ce9178]">'markers'</span>,
+    marker=<span class="text-[#dcdcaa]">dict</span>(size=<span class="text-[#b5cea8]">4</span>, color=energies, colorscale=<span class="text-[#ce9178]">'Turbo'</span>)
+), row=<span class="text-[#b5cea8]">1</span>, col=<span class="text-[#b5cea8]">1</span>)
+
+hist, bins = np.histogram(energies, bins=<span class="text-[#b5cea8]">30</span>)
+fig.add_trace(go.Bar(x=bins[:-<span class="text-[#b5cea8]">1</span>], y=hist), row=<span class="text-[#b5cea8]">1</span>, col=<span class="text-[#b5cea8]">2</span>)
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># LAYOUT (SCI-FI + EXPLANATION)</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+fig.update_layout(
+    title=<span class="text-[#ce9178]">f"""</span>
+<span class="text-[#ce9178]">COSMIC ENGINE — {MODE.upper()} ENSEMBLE</span>
+
+<span class="text-[#ce9178]">🔵 Blue = Low Energy (Cold States)</span>
+<span class="text-[#ce9178]">🔴 Red = High Energy (Hot States)</span>
+
+<span class="text-[#ce9178]">Microcanonical → Fixed Energy Universe  </span>
+<span class="text-[#ce9178]">Canonical → Thermal (NASA Data Driven)  </span>
+<span class="text-[#ce9178]">Grand Canonical → Particle Creation & Destruction</span>
+<span class="text-[#ce9178]">"""</span>,
+    paper_bgcolor=<span class="text-[#ce9178]">"black"</span>,
+    font=<span class="text-[#dcdcaa]">dict</span>(color=<span class="text-[#ce9178]">"cyan"</span>),
+    scene=<span class="text-[#dcdcaa]">dict</span>(
+        bgcolor=<span class="text-[#ce9178]">"black"</span>,
+        xaxis=<span class="text-[#dcdcaa]">dict</span>(visible=<span class="text-[#569cd6]">False</span>),
+        yaxis=<span class="text-[#dcdcaa]">dict</span>(visible=<span class="text-[#569cd6]">False</span>),
+        zaxis=<span class="text-[#dcdcaa]">dict</span>(visible=<span class="text-[#569cd6]">False</span>)
+    ),
+    updatemenus=[{
+        <span class="text-[#ce9178]">"type"</span>: <span class="text-[#ce9178]">"buttons"</span>,
+        <span class="text-[#ce9178]">"buttons"</span>: [
+            {
+                <span class="text-[#ce9178]">"label"</span>: <span class="text-[#ce9178]">"▶ Run Universe"</span>,
+                <span class="text-[#ce9178]">"method"</span>: <span class="text-[#ce9178]">"animate"</span>,
+                <span class="text-[#ce9178]">"args"</span>: [<span class="text-[#569cd6]">None</span>, {
+                    <span class="text-[#ce9178]">"frame"</span>: {<span class="text-[#ce9178]">"duration"</span>: <span class="text-[#b5cea8]">40</span>},
+                    <span class="text-[#ce9178]">"transition"</span>: {<span class="text-[#ce9178]">"duration"</span>: <span class="text-[#b5cea8]">0</span>},
+                    <span class="text-[#ce9178]">"fromcurrent"</span>: <span class="text-[#569cd6]">True</span>,
+                    <span class="text-[#ce9178]">"mode"</span>: <span class="text-[#ce9178]">"immediate"</span>
+                }]
+            }
+        ]
+    }]
+)
+
+fig.frames = frames
+
+<span class="text-[#6a9955]"># ==========================================================</span>
+<span class="text-[#6a9955]"># EXPORT HTML</span>
+<span class="text-[#6a9955]"># ==========================================================</span>
+fig.write_html(<span class="text-[#ce9178]">"ultimate_cosmic_engine.html"</span>)
+
+<span class="text-[#dcdcaa]">print</span>(<span class="text-[#ce9178]">"SUCCESS: Open ultimate_cosmic_engine.html"</span>)
 </code></pre>
                     </div>
                 </div>
@@ -467,12 +639,19 @@ kde.fit(freq.reshape(-<span class="text-[#b5cea8]">1</span>,<span class="text-[#
     <section id="simulation" class="py-32 relative z-10">
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row justify-between items-end mb-10 gap-6">
-                <div>
-                    <h2 class="text-4xl font-bold tracking-tight mb-2">Live Rendering Engine.</h2>
-                    <p class="text-appleTextSecondary flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#27c93f]"></span> 
-                        Running WebGL Plotly Interface
-                    </p>
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <h2 class="text-4xl font-bold tracking-tight mb-2">Live Rendering Engine.</h2>
+                        <p class="text-appleTextSecondary flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_#27c93f]"></span> 
+                            Running WebGL Plotly Interface
+                        </p>
+                    </div>
+                    <div>
+                        <a href="https://yash5852176.github.io/universe_explained-/" target="_blank" class="inline-flex items-center gap-2 px-5 py-2.5 bg-appleBlue text-white rounded-full text-sm font-medium hover:bg-blue-500 transition-colors shadow-[0_0_15px_rgba(41,151,255,0.3)]">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Fullscreen Simulation
+                        </a>
+                    </div>
                 </div>
                 
                 <!-- Interpretation Legend -->
@@ -699,23 +878,48 @@ kde.fit(freq.reshape(-<span class="text-[#b5cea8]">1</span>,<span class="text-[#
             
             for (let i = 0; i < 5; i++) {
                 try {
+                    // Pre-flight check to warn users if they deploy without setting the API key
+                    if (!apiKey && window.location.hostname !== "localhost" && !window.location.hostname.includes("google")) {
+                        console.warn("API key is missing.");
+                    }
+
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    
+                    if (!response.ok) {
+                        const err = await response.json();
+                        throw new Error(`API Error: ${err.error?.message || response.statusText}`);
+                    }
+                    
                     const data = await response.json();
-                    return data.candidates[0].content.parts[0].text;
+                    
+                    if (data.candidates && data.candidates[0].content.parts.length > 0) {
+                        return data.candidates[0].content.parts[0].text;
+                    } else {
+                        throw new Error("Invalid response format from Gemini API.");
+                    }
                 } catch (error) {
-                    if (i === 4) return "Connection to the inference endpoint failed. Please verify API access.";
+                    console.error("Gemini API Error:", error);
+                    if (i === 4) {
+                        if (error.message.includes("API_KEY_INVALID") || url.endsWith("key=")) {
+                            return "Error: Missing or Invalid API Key. If hosting on GitHub Pages, add your Google AI Studio API key to the 'apiKey' variable in the code.";
+                        }
+                        return "Connection to the inference endpoint failed. Please verify API access and try again.";
+                    }
                     await new Promise(resolve => setTimeout(resolve, delays[i]));
                 }
             }
         }
 
         function formatMarkdown(text) {
-            return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+            // Enhanced Markdown parsing for bold, code blocks, and line breaks
+            let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+            formatted = formatted.replace(/`(.*?)`/g, '<code class="bg-[#2d2d2d] px-1.5 py-0.5 rounded text-appleBlue font-mono text-xs">$1</code>');
+            formatted = formatted.replace(/\n/g, '<br>');
+            return formatted;
         }
 
         aiBtn.addEventListener('click', async () => {
@@ -725,12 +929,14 @@ kde.fit(freq.reshape(-<span class="text-[#b5cea8]">1</span>,<span class="text-[#
             aiLoading.classList.remove('hidden');
             aiBtn.disabled = true;
             aiBtn.classList.add('opacity-50');
+            aiOutput.innerHTML = ""; // Clear previous output to show loading state properly
 
             const resultText = await fetchGeminiAnalysis(query);
 
             aiLoading.classList.add('hidden');
             aiBtn.disabled = false;
             aiBtn.classList.remove('opacity-50');
+            aiInput.value = ""; // Clear the input field for the next question
             
             aiOutput.innerHTML = formatMarkdown(resultText);
         });
