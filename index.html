@@ -157,6 +157,7 @@
                 <a href="#ensembles" class="hover:text-white transition-colors">Ensembles</a>
                 <a href="#architecture" class="hover:text-white transition-colors">Architecture</a>
                 <a href="#simulation" class="hover:text-white transition-colors text-appleBlue">Simulation</a>
+                <a href="#research-paper" class="hover:text-white transition-colors">Paper</a>
                 <a href="#ai-assistant" class="hover:text-white transition-colors"><i class="fa-solid fa-sparkles text-xs mr-1"></i> AI</a>
             </div>
             <a href="https://github.com/yash5852176" target="_blank" class="text-appleTextSecondary hover:text-white transition-colors">
@@ -184,9 +185,15 @@
                     Explore the Physics
                 </a>
             </div>
+            
+            <div class="mt-8 flex justify-center">
+                <a href="#research-paper" class="flex items-center gap-2 text-sm text-appleBlue hover:text-white hover:underline transition-all">
+                    <i class="fa-regular fa-file-lines"></i> Read the Official Research Paper 
+                </a>
+            </div>
         </div>
 
-        <div class="mt-24 text-center z-10 max-w-2xl mx-auto bg-appleCard p-6 rounded-2xl border border-appleBorder">
+        <div class="mt-20 text-center z-10 max-w-2xl mx-auto bg-appleCard p-6 rounded-2xl border border-appleBorder">
             <p class="text-appleTextSecondary italic mb-2 text-lg">"The law that entropy always increases holds, I think, the supreme position among the laws of Nature."</p>
             <p class="text-sm font-semibold text-white">— Arthur Eddington</p>
         </div>
@@ -247,7 +254,7 @@
                     </div>
 
                     <p class="text-appleTextSecondary text-lg leading-relaxed">
-                        This normalizes the data, fundamentally turning physics into probability, allowing our simulation engine to sample the data as the likelihood of quantum particle states. Everything culminates in maximizing thermodynamic entropy: <span class="font-mono bg-black px-2 py-1 rounded">S = k ln W</span>.
+                        This normalizes the data, fundamentally turning physics into probability, allowing our simulation engine to sample the data as the likelihood of quantum particle states. Everything culminates in maximizing thermodynamic entropy: <span class="font-mono bg-black px-2 py-1 rounded">S = k \ln W</span>.
                     </p>
                 </div>
                 
@@ -691,6 +698,200 @@ fig.write_html(<span class="text-[#ce9178]">"ultimate_cosmic_engine.html"</span>
                 <p class="text-appleTextPrimary leading-relaxed text-lg italic">
                     "The simulation demonstrates that particle distributions in the early universe are governed by probabilistic laws derived from real observational data. By mapping radiation intensity into a probability distribution and implementing Gibbs ensemble frameworks, the system reproduces key thermodynamic behaviors such as equilibrium, particle exchange, and volume expansion. The inclusion of microcanonical, canonical, and grand canonical ensembles provides a comprehensive representation of different physical regimes, with the grand canonical model closely reflecting the dynamic nature of the early universe."
                 </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6.5 Embedded Research Paper Viewer -->
+    <section id="research-paper" class="py-32 relative z-10 bg-[#0a0a0c]">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <div class="inline-block px-3 py-1 bg-applePurple/20 border border-applePurple/30 text-applePurple text-xs font-semibold uppercase tracking-widest rounded-full mb-4">Official Publication</div>
+                <h2 class="text-4xl font-bold tracking-tight mb-4">Read the Research Paper</h2>
+                <p class="text-appleTextSecondary text-sm max-w-2xl mx-auto">Embedded Academic Reader. The complete paper containing mathematical derivations and theoretical explanations is loaded directly below.</p>
+            </div>
+
+            <!-- Custom Document Reader UI -->
+            <div class="bg-[#151516] border border-[#333] rounded-2xl shadow-[0_0_50px_rgba(0,0,0,0.8)] overflow-hidden relative flex flex-col">
+                
+                <!-- Mock macOS Toolbar -->
+                <div class="h-12 bg-[#1d1d1f] border-b border-[#333] flex items-center px-4 justify-between shrink-0">
+                    <div class="flex gap-2">
+                        <div class="w-3 h-3 rounded-full bg-[#ff5f56]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#ffbd2e]"></div>
+                        <div class="w-3 h-3 rounded-full bg-[#27c93f]"></div>
+                    </div>
+                    <div class="text-xs text-appleTextSecondary font-mono truncate px-4 tracking-wider">Statistical_Reconstruction_of_Early_Universe.pdf</div>
+                    <div class="flex gap-4 text-appleTextSecondary">
+                        <i class="fa-solid fa-file-pdf cursor-pointer hover:text-white transition-colors" title="PDF Format"></i>
+                    </div>
+                </div>
+
+                <!-- Scrollable Paper Content -->
+                <div class="p-8 md:p-16 h-[75vh] overflow-y-auto text-[#e5e5ea] font-serif leading-loose" style="font-family: 'Georgia', serif;">
+                    
+                    <h1 class="text-3xl md:text-4xl font-bold text-center mb-4 text-white leading-tight">
+                        Statistical Reconstruction of Early-Universe Particle Distributions<br>
+                        <span class="text-2xl text-gray-400 font-normal">via Gibbs Ensemble Simulation and Data-Driven Modeling</span>
+                    </h1>
+                    
+                    <p class="text-xl text-center italic text-appleBlue mb-16">Yash Yadav</p>
+                    
+                    <h2 class="text-2xl font-bold text-white mb-4 border-b border-[#333] pb-2">Abstract</h2>
+                    <p class="mb-10 text-lg">
+                        The early universe can be understood as a high-temperature statistical system governed by probabilistic laws rather than deterministic trajectories. In this work, we construct a data-driven computational framework that connects observational cosmology with statistical mechanics. Using Cosmic Microwave Background (CMB) spectral data from the COBE/FIRAS experiment, we derive a probability distribution of energy states and employ it to generate particle configurations within a Gibbs ensemble framework. The model incorporates microcanonical, canonical, and grand canonical ensembles to explore different thermodynamic regimes. A kernel density estimation (KDE) approach is used to approximate the underlying distribution of states. The resulting simulation demonstrates that equilibrium structure, particle clustering, and energy distributions emerge naturally from probabilistic sampling and expansion dynamics. This study highlights how macroscopic cosmological behavior can arise from statistical principles and provides a computational bridge between observational data and theoretical physics.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">1 Introduction</h2>
+                    <p class="mb-6 text-lg">
+                        The evolution of the early universe is fundamentally governed by statistical laws arising from large ensembles of interacting particles. Rather than tracking individual particle trajectories, statistical mechanics provides a framework in which macroscopic behavior emerges from distributions over microscopic states. Observational evidence from the Cosmic Microwave Background (CMB) confirms that the early universe existed in a near-equilibrium thermal state characterized by a blackbody spectrum.
+                    </p>
+                    <p class="mb-10 text-lg">
+                        This work adopts a probabilistic perspective, where particle distributions are reconstructed from observational data and interpreted through the lens of Gibbs ensemble theory. By combining data-driven modeling with computational simulation, we aim to demonstrate how large-scale structure and equilibrium properties emerge naturally from statistical principles.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">2 Theoretical Framework</h2>
+                    
+                    <h3 class="text-xl font-bold text-gray-300 mt-8 mb-4">2.1 Blackbody Radiation and Planck Distribution</h3>
+                    <p class="mb-4 text-lg">
+                        The spectral energy density of radiation in thermal equilibrium is described by Planck's law:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ I(\nu,T)=\frac{2h\nu^{3}}{c^{2}}\cdot\frac{1}{e^{h\nu/kT}-1} $$
+                    </div>
+                    <p class="mb-8 text-lg">
+                        This distribution arises from Bose-Einstein statistics and governs photon occupation numbers in equilibrium.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-8 mb-4">2.2 Probability Interpretation</h3>
+                    <p class="mb-4 text-lg">
+                        To translate observational data into a simulation framework, intensity values are normalized into a probability distribution:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ P_{i}=\frac{I_{i}}{\sum_{j}I_{j}} $$
+                    </div>
+                    <p class="mb-8 text-lg">
+                        This allows the radiation spectrum to be interpreted as a statistical distribution over energy states.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-8 mb-4">2.3 Entropy and Equilibrium</h3>
+                    <p class="mb-4 text-lg">
+                        The macroscopic state of the system is determined by entropy:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ S=k_{B}\ln W $$
+                    </div>
+                    <p class="mb-10 text-lg">
+                        where \(W\) represents the number of accessible microstates. Systems evolve toward configurations that maximize entropy, corresponding to equilibrium.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">3 Gibbs Ensemble Formulation</h2>
+                    <p class="mb-6 text-lg">The system is analyzed under three ensemble conditions:</p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-6 mb-4">3.1 Microcanonical Ensemble</h3>
+                    <p class="mb-4 text-lg">The total energy is conserved:</p>
+                    <div class="my-6 text-xl text-center">
+                        $$ E = \text{constant} $$
+                    </div>
+                    <p class="mb-8 text-lg">This represents an isolated system with no exchange of energy or particles.</p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-6 mb-4">3.2 Canonical Ensemble</h3>
+                    <p class="mb-4 text-lg">
+                        The system exchanges energy with a thermal reservoir. The probability of a state with energy \(E_{i}\) is:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ P(E_{i})=\frac{e^{-\beta E_{i}}}{Z} $$
+                    </div>
+                    <p class="mb-8 text-lg">where \(\beta=1/kT\) and \(Z\) is the partition function.</p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-6 mb-4">3.3 Grand Canonical Ensemble</h3>
+                    <p class="mb-4 text-lg">
+                        Both energy and particle number fluctuate. The probability distribution becomes:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ P(E_{i},N_{i})=\frac{e^{-\beta(E_{i}-\mu N_{i})}}{\Xi} $$
+                    </div>
+                    <p class="mb-4 text-lg">where \(\mu\) is the chemical potential and \(\Xi\) is the grand partition function.</p>
+                    <p class="mb-10 text-lg">
+                        This ensemble is particularly relevant to the early universe, where particle creation and annihilation processes occur.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">4 Data-Driven Modeling</h2>
+                    
+                    <h3 class="text-xl font-bold text-gray-300 mt-6 mb-4">4.1 CMB Data Source</h3>
+                    <p class="mb-8 text-lg">
+                        The dataset used in this study is obtained from the COBE/FIRAS instrument, which provides high-precision measurements of the CMB spectrum. This dataset represents one of the strongest confirmations of thermal equilibrium in the early universe.
+                    </p>
+
+                    <h3 class="text-xl font-bold text-gray-300 mt-6 mb-4">4.2 Kernel Density Estimation</h3>
+                    <p class="mb-4 text-lg">
+                        To approximate the underlying probability distribution, we employ Kernel Density Estimation:
+                    </p>
+                    <div class="my-6 text-xl text-center">
+                        $$ \hat{f}(x)=\frac{1}{nh}\sum_{i=1}^{n}K\left(\frac{x-x_{i}}{h}\right) $$
+                    </div>
+                    <p class="mb-10 text-lg">
+                        This enables smooth sampling of energy states consistent with observational data.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">5 Simulation Model</h2>
+                    <p class="mb-4 text-lg">
+                        Particles are initialized in three-dimensional space with stochastic positions and velocities. The system evolves under:
+                    </p>
+                    <ul class="list-disc pl-8 mb-6 text-lg space-y-2">
+                        <li>Hubble-like expansion: \(v \propto r\)</li>
+                        <li>Simplified gravitational interaction</li>
+                        <li>Probabilistic energy sampling</li>
+                    </ul>
+                    <p class="mb-10 text-lg">
+                        The grand canonical regime further includes stochastic particle creation and annihilation, modeling early-universe dynamics.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">6 Results</h2>
+                    <p class="mb-4 text-lg">The simulation produces several key behaviors:</p>
+                    <ul class="list-disc pl-8 mb-6 text-lg space-y-2">
+                        <li>Emergence of dense regions corresponding to high-probability states</li>
+                        <li>Stability of energy distributions over time</li>
+                        <li>Expansion-driven dilution of particle density</li>
+                    </ul>
+                    <p class="mb-10 text-lg">
+                        Energy histograms remain consistent with the underlying probability distribution, indicating preservation of statistical equilibrium.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">7 Discussion</h2>
+                    <p class="mb-4 text-lg">
+                        The results demonstrate that large-scale structure can emerge from purely statistical rules without requiring explicit deterministic modeling of every interaction. The grand canonical ensemble provides the most physically relevant description, capturing the dynamic exchange processes characteristic of the early universe.
+                    </p>
+                    <p class="mb-10 text-lg">
+                        This reinforces the idea that cosmological evolution is fundamentally governed by probabilistic principles.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">8 Limitations</h2>
+                    <p class="mb-4 text-lg">The present model includes several simplifying assumptions:</p>
+                    <ul class="list-disc pl-8 mb-10 text-lg space-y-2">
+                        <li>Absence of general relativistic effects</li>
+                        <li>Approximate gravitational interactions</li>
+                        <li>Classical treatment of quantum phenomena</li>
+                        <li>Machine learning used as an approximation tool</li>
+                    </ul>
+                    <p class="mb-10 text-lg">
+                        Despite these limitations, the model captures essential statistical features of early-universe behavior.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">9 Conclusion</h2>
+                    <p class="mb-16 text-lg">
+                        This work demonstrates that particle distributions in the early universe can be effectively reconstructed using statistical mechanics and data-driven modeling. By integrating observational data, Gibbs ensemble theory, and computational simulation, the study provides a framework for understanding how equilibrium and structure emerge from probabilistic laws.
+                    </p>
+
+                    <h2 class="text-2xl font-bold text-white mt-12 mb-4 border-b border-[#333] pb-2">References</h2>
+                    <ul class="list-none mb-10 text-lg space-y-4">
+                        <li>• Planck, M. (1901). <span class="italic">On the Law of Distribution of Energy in the Normal Spectrum.</span></li>
+                        <li>• Gibbs, J. W. (1902). <span class="italic">Elementary Principles in Statistical Mechanics.</span></li>
+                        <li>• Fixsen, D. J. (2009). <span class="italic">The Temperature of the Cosmic Microwave Background.</span></li>
+                        <li>• Pathria, R. K., & Beale, P. D. (2011). <span class="italic">Statistical Mechanics.</span></li>
+                        <li>• Bishop, C. M. (2006). <span class="italic">Pattern Recognition and Machine Learning.</span></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </section>
